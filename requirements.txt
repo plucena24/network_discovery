@@ -1,0 +1,4 @@
+virtualenv
+xmltodict
+django
+netmiko
