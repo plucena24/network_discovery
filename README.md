@@ -96,42 +96,42 @@ If you do not wish to provide further implementation of other discovery methods,
 
 - install python
 - install pip
-    $ wget https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=3&cad=rja&uact=8&ved=0ahUKEwi9mdeIt_PLAhWHloMKHSCZDnMQFgguMAI&url=https%3A%2F%2Fbootstrap.pypa.io%2Fget-pip.py&usg=AFQjCNE8Fo9j_sgo1hBzEoUT39H85hFDrg
-    $ <python_version> get-pip.py
+    - `$ wget https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=3&cad=rja&uact=8&ved=0ahUKEwi9mdeIt_PLAhWHloMKHSCZDnMQFgguMAI&url=https%3A%2F%2Fbootstrap.pypa.io%2Fget-pip.py&usg=AFQjCNE8Fo9j_sgo1hBzEoUT39H85hFDrg`
+    - `$ <python_version> get-pip.py`
     - install virtualenv
-        $ <python_version> -m pip install virtualenv
+       - `$ <python_version> -m pip install virtualenv`
 - create virtualenv
-    $ virtualenv -p <python_version> $VIRTUAL_ENV_NAME
+    - `$ virtualenv -p <python_version> $VIRTUAL_ENV_NAME`
 - install required tools
-    $ sudo apt-get install python-setuptools python-dev build-essential
+    - `$ sudo apt-get install python-setuptools python-dev build-essential`
 - go into virtualenv
-    $ source ~/network_automation/bin/activate
+    - `$ source ~/network_automation/bin/activate`
     - install dependencies
-      $ <python_version> -m pip install -r requirements.txt
+    - `$ <python_version> -m pip install -r requirements.txt`
 
 # Setting up Django
 - Create django project
   - go into virtualenv
-    source ~/$VIRTUAL_ENV_NAME/bin/activate
+    - `$ source ~/$VIRTUAL_ENV_NAME/bin/activate`
   - all previous requirements must have been installed in virtualenv (requirements.txt)
     - make sure django is installed in virtualenv
-    $ python -c 'import django; print(django.__file__)'
+       - `$ python -c 'import django; print(django.__file__)'`
   - create project
-    $ django-admin startproject $PROJECT_NAME
+    - `$ django-admin startproject $PROJECT_NAME`
   - create app inside $PROJECT_NAME
-    $ python manage.py startapp $APP_NAME
+    - `$ python manage.py startapp $APP_NAME`
   - start initiall db migration
-    $ python manage.py migrate
+    - `$ python manage.py migrate`
   - Replace models.py in the django app with the models.py file included in db_models/models.py
   - Add app name to settings.py
   - Run makemigrations
-    $ python manage.py makemigrations $APP_NAME
+    - `$ python manage.py makemigrations $APP_NAME`
   - re-run the migration
-    $ python manage.py migrate
+    - `$ python manage.py migrate`
 
   - add a .pth file under the virtualenv's site-packages with the absolute path to the code directory
 
   - Add enviroment variables for settings
-    $ export DJANGO_SETTINGS_MODULE=$PROJECT_NAME.settings
+    - `$ export DJANGO_SETTINGS_MODULE=$PROJECT_NAME.settings`
     to make this permanent, you can modify the 'activate' virtualenv script and add this same line there. This way, everytime you activate the virtualenv, these env variables get added automatically.
 
