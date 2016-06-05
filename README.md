@@ -11,10 +11,6 @@ by "crawling" the network using Breadth First Search. This makes adding all disc
 
 After the database is populated, you can then more easily script against the network using tools like Ansible, or just straight Python, by using the database as a basis to your inventory. Besides populating the database, network_discovery outputs an adjacency_list of all discovered nodes as a JSON blob. This is basically a graph of how your network is connected - and gives you additional info about each link, such as interface names, ip/ipv6 addresses, device name/model and os_version. This data can be piped into graphing tools, or can be used a simple way to detect topology changes (diff today's node graph with yesterday's)
 
-#
-# Intro
-##################################################
-
 
 ##################################################
 # Overview
@@ -36,7 +32,7 @@ This discovery mechanism also provides additional info about each connected neig
 After extracting this data about each discovered neighbor of the root, we place
 all **valid** discovered neighbors into a queue. This queue provides a way for the algorithm to track the progress of the overall network discovery process.
 
-Valid neighbors are those that we wish to be discovered, and that pass certain criteria. To "blacklist" devices from being discovered, the "ignore_regex" parameter is consulted from the provided configuration. A positive regex match against a connected device's hostname will prevent it from being explored/discovered (as it will not get added to the queue). This is useful for blacklisting devices that show up via CDP/LLDP - such as IP Phones, Wireless APs, and servers. Usually such devices are not part of the network topology as they are mainly endpoints, and are managed by other teams which don't appreciate unauthorized login attempts =)
+Valid neighbors are those that we wish to be discovered, and that pass certain criteria. To "blacklist" devices from being discovered, the `ignore_regex` parameter is consulted from the provided configuration. A positive regex match against a connected device's hostname will prevent it from being explored/discovered (as it will not get added to the queue). This is useful for blacklisting devices that show up via CDP/LLDP - such as IP Phones, Wireless APs, and servers. Usually such devices are not part of the network topology as they are mainly endpoints, and are managed by other teams which don't appreciate unauthorized login attempts =)
 
 At this point, we have the root's valid neighbors in the queue. We begin processing these devices by visiting each one (visiting in this text means connecting via SSH), and discovering its connected neighbors. The following sequence of events occurs while we "visit" each device.
 
@@ -52,15 +48,11 @@ Notice that we are adding all devices we need to "visit/explore" into the queue.
 
 Additionally, in order to get added into the queue, the following conditions must pass:
 
-    - The device is not blacklisted via "ignore_regex"
+    - The device is not blacklisted via `ignore_regex`
     - The device has not previously failed
     - The device has not already been visited
 
-#
-# Overview
 ##################################################
-
-​##################################################
 # Requirements for initial discovery of network
 #
 
@@ -85,20 +77,18 @@ No other access rights or privileges are needed for this account. This account i
 
 The most important methods are:
 
-   - discovery_command - what cmd do we need to run to look at connected neighbors - for Cisco its 'show cdp neighbor detail')
-   - discover_neighbors - after getting the output of executing the discovery_command, how can we parse it to get details about the connected neighbors? This method should return a dictionary with keys containing the local interfaces of the device. Each key (local interface) should have a dictionary as a value with the connected device's info. :
+   -`discovery_command` - what cmd do we need to run to look at connected neighbors - for Cisco its 'show cdp neighbor detail')
+   - `discover_neighbors` - after getting the output of executing the discovery_command, how can we parse it to get details about the connected neighbors? This method should return a dictionary with keys containing the local interfaces of the device. Each key (local interface) should have a dictionary as a value with the connected device's info. :
 
+```
 {"Eth1/1": {"device_name": "router1", "ip_address": "1.1.1.1", "ipv6_address": "2001::1", "device_model": "N9K111", "remote_interface": "Eth9/1", "os_version": "Cisco Nexus NXOS 6.3.1K9123"},
 
 "Eth1/2": {"device_name": "router2", "ip_address": "2.2.2.2", "ipv6_address": "2001::2", "model": "N9K222", "remote_interface": "Eth9/1", "os_version": "Cisco Nexus NXOS 6.3.1K9123"}
 
 ... etc
+```
 
 If you do not wish to provide further implementation of other discovery methods, which discover even more facts about a device such as serial numbers, uptime, and other stuff not seen in CDP/LLDP, then simply override the corresponding method and just return None instead of providing an implementation.
-
-#
-# Done with Requirements
-##################################################
 
 ##################################################
 # Setup instructions
@@ -106,7 +96,7 @@ If you do not wish to provide further implementation of other discovery methods,
 
 - install python
 - install pip
-    $wget https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=3&cad=rja&uact=8&ved=0ahUKEwi9mdeIt_PLAhWHloMKHSCZDnMQFgguMAI&url=https%3A%2F%2Fbootstrap.pypa.io%2Fget-pip.py&usg=AFQjCNE8Fo9j_sgo1hBzEoUT39H85hFDrg
+    $ wget https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=3&cad=rja&uact=8&ved=0ahUKEwi9mdeIt_PLAhWHloMKHSCZDnMQFgguMAI&url=https%3A%2F%2Fbootstrap.pypa.io%2Fget-pip.py&usg=AFQjCNE8Fo9j_sgo1hBzEoUT39H85hFDrg
     $ <python_version> get-pip.py
     - install virtualenv
         $ <python_version> -m pip install virtualenv
@@ -145,6 +135,3 @@ If you do not wish to provide further implementation of other discovery methods,
     $ export DJANGO_SETTINGS_MODULE=$PROJECT_NAME.settings
     to make this permanent, you can modify the 'activate' virtualenv script and add this same line there. This way, everytime you activate the virtualenv, these env variables get added automatically.
 
-#
-# Done with Setup instructions
-##################################################
