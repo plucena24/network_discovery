@@ -17,7 +17,7 @@ class CiscoBaseParser(BaseParser):
 
     @property
     def discovery_command(self):
-        return 'show cdp neighbor detail'
+        return Cmd('show cdp neigh detail', 5)
 
     @property
     def neighbor_discover_regex(self):
@@ -45,7 +45,7 @@ class CiscoBaseParser(BaseParser):
 
     @property
     def extra_facts_cmds(self):
-        return dict('version' : Cmd('show version', '2'))
+        return {'version' : Cmd('show version', '2')}
 
     def normalize_intf_str(self, remote_intf):
 

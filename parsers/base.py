@@ -51,9 +51,11 @@ class BaseParser(object):
         neighbors
         '''
         neighbors = {}
-        neighbor_output = conn.send_command(self.discovery_command)
+        cmd, delay = self.discovery_command
+        neighbor_output = self.conn.send_command(cmd, delay_factor=delay)
         neighbor_re = re.compile(self.neighbor_discover_regex)
-        all_neighbors = neighbor_re.findall(self.neighbor_output)
+        all_neighbors = neighbor_re.finditer(self.neighbor_output)
+        all_neighbors = [n.groupdict() for n in all_neighbors if n]
         all_neighbors = self.normalize_neighbors(all_neighbors)
 
         for neighbor in all_neighbors:
@@ -84,9 +86,9 @@ class BaseParser(object):
         '''
         normalize local/remote interfaces from CDP/LLDP
         '''
-        for key, value in neighbors.items():
-            if key in ['remote_interface', 'local_interface']:
-                value = normalize_intf_str(value)
+        for neighbor in neighbors:
+            for key in ['device_interface', 'local_interface']:
+                neighbor[key] = self.normalize_intf_str(neighbor[key])
 
     def normalize_intf_str(self, remote_intf):
 
